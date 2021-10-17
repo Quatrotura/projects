@@ -355,15 +355,49 @@ INSERT INTO transportation_modes (trans_mode) VALUES
 SELECT * from transportation_modes;
 
 INSERT INTO transportation_routes VALUES
-    (NULL, 1, 2, 1, 3, NULL, 1, 8, 35),
-    (NULL, 1, 2, 1, 3, NULL, 3, 8, 30),
-    (NULL, 1, 3, 1, 3, NULL, 3, 8, 55),
-    (NULL, 1, 3, 1, 3, NULL, 3, 8, 55),
-    (NULL, 1, 3, 1, 3, NULL, 3, 8, 55),
-    (NULL, 1, 3, 1, 3, NULL, 3, 8, 55),
+(NULL, 1, 2, 1, 3, NULL, 1, 8, 35),
+(NULL, 1, 2, 1, 3, NULL, 3, 8, 30),
+(NULL, 1, 3, 1, 4, NULL, 1, 8, 57),
+(NULL, 6, 1, 1, 3, NULL, 1, 8, 45),
+(NULL, 6, 3, 1, 4, NULL, 1, 8, 52),
+(NULL, 1, NULL, NULL, NULL, 2, 1, 8, 12),
+(NULL, 4, NULL, NULL, NULL, 2, 1, 8, 7),
+(NULL, 7, NULL, NULL, NULL, 4, 1, 8, 14),
+(NULL, 3, NULL, NULL, NULL, 3, 5, 8, 17),
+(NULL, 3, NULL, NULL, NULL, 3, 1, 8, 21);
+
+SELECT c.name, pol.name, th.name, tm1.trans_mode, tm2.trans_mode, tm3.trans_mode, dp.name, tr.transit_time
+FROM transportation_routes tr
+LEFT JOIN ports_of_loading pol on tr.port_of_loading_id = pol.id
+LEFT JOIN transhipment_hubs th on tr.trans_hub_id = th.id
+LEFT JOIN transportation_modes tm1 on tr.from_port_to_hub_trans_mode_id = tm1.id
+LEFT JOIN transportation_modes tm2 on tr.from_hub_to_dest_point_trans_mode_id = tm2.id
+LEFT JOIN transportation_modes tm3 on tr.from_port_to_dest_point_trans_mode_id = tm3.id
+LEFT JOIN destination_points dp on tr.destination_point_id = dp.id
+LEFT JOIN collections c on tr.collection_id = c.id;
+
+-- найти самый быстрый маршрут доставки в Москву из Шанхая кроме авиа транспорта
+SELECT pol.name, th.name, tm1.trans_mode, tm2.trans_mode, tm3.trans_mode, dp.name, tr.transit_time
+FROM transportation_routes tr
+LEFT JOIN ports_of_loading pol on tr.port_of_loading_id = pol.id
+LEFT JOIN transhipment_hubs th on tr.trans_hub_id = th.id
+LEFT JOIN transportation_modes tm1 on tr.from_port_to_hub_trans_mode_id = tm1.id
+LEFT JOIN transportation_modes tm2 on tr.from_hub_to_dest_point_trans_mode_id = tm2.id
+LEFT JOIN transportation_modes tm3 on tr.from_port_to_dest_point_trans_mode_id = tm3.id
+LEFT JOIN destination_points dp on tr.destination_point_id = dp.id
+WHERE (pol.name = 'Shanghai') AND (dp.name = 'FDC Moscow') AND (tm3.trans_mode != 'air' or tm3.trans_mode is NULL)
+  AND (tm2.trans_mode != 'air' OR tm2.trans_mode is NULL) AND (tm1.trans_mode != 'air' OR tm1.trans_mode is NULL)
+ORDER BY tr.transit_time LIMIT 1;
+
+-- вывести результирующую таблицу с объединенными названиями маршрутов и транзитным временем
+
+
+
+
+
+
 
 --
--- найти самый быстрый маршрут доставки в Москву из Шанхая
 +-------+------------+----+------------+------------+
 | polID | name       | id | country    | city       |
 +-------+------------+----+------------+------------+
