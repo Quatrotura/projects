@@ -357,6 +357,7 @@ SELECT * from transportation_modes;
 INSERT INTO transportation_routes VALUES
     (NULL, 1, 2, 1, 3, NULL, 1, 8, 35),
     (NULL, 1, 2, 1, 3, NULL, 3, 8, 30),
+    (NULL, 1, 3, 1, 3, NULL, 3, 8, 55),
 --
 -- найти самый быстрый маршрут доставки в Москву из Шанхая
 +-------+------------+----+------------+------------+
