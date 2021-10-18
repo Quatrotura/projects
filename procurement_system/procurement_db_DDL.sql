@@ -3,38 +3,19 @@ CREATE DATABASE IF NOT EXISTS procurement_db;
 
 use procurement_db;
 
-DROP TABLE IF EXISTS roles;
-CREATE TABLE IF NOT EXISTS roles (
-    role_name VARCHAR(60) PRIMARY KEY,
-    commands TEXT NOT NULL,
-    permitted_tables TEXT NOT NULL
-);
-
-
--- сделать тригер на создание роли (нет: подтягивание ролей из mysql.role_edges, mysql.user после создания роли)
-
 DROP TABLE IF EXISTS users;
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    firstname CHAR NOT NULL,
-    lastname CHAR NOT NULL,
-    patron_name CHAR NOT NULL,
+    firstname CHAR(40) NOT NULL,
+    lastname CHAR(40) NOT NULL,
     acc_name VARCHAR(45) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    role_name VARCHAR(60) NOT NULL,
     email VARCHAR(50) NOT NULL UNIQUE,
-    phone TINYINT UNSIGNED DEFAULT NULL UNIQUE,
     `status` ENUM ('active','deactivated'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by VARCHAR(45),
-    updated_at TIMESTAMP DEFAULT NULL ON update CURRENT_TIMESTAMP,
-    updated_by VARCHAR(45),
-    KEY index_of_roles (role_name),
     KEY index_of_lastname(lastname),
     KEY index_of_names (firstname,lastname),
-    KEY index_of_emails (email),
-
-    CONSTRAINT fk_users_role_name FOREIGN KEY (role_name) REFERENCES roles(role_name)
+    KEY index_of_emails (email)
 
 -- сделать триггер на создание пользователя и роли при вставке значений в эту таблицу
 -- сделать триггер на встаку значения created_by, updated_by имя пользователя вставившего значения

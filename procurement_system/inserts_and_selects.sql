@@ -1,3 +1,14 @@
+INSERT INTO users VALUES (NULL, 'Judy', 'Dickinson', 'dickinson.judy', '9f0000106ea539eb6bda8cb2f1cd16362ada0dd7', 'miguel.feil@example.net',  'deactivated', '2000-06-21 11:35:18');
+INSERT INTO users VALUES (NULL, 'Jovanny', 'Smith', 'jovanny.smith', '441cbba5dffcc3e315f1ec8dce33219c0712aa3b', 'gleichner.nadia@example.net', 'deactivated', '1988-01-30 04:01:26');
+INSERT INTO users VALUES (NULL, 'Haylie', 'Schulist', 'schulist.haylie', '68c7fad6c099ec43912dda581ec48f7c43101ac5', 'kulas.trenton@example.net',  'deactivated', '2013-01-21 02:55:39');
+INSERT INTO users VALUES (NULL, 'Mireya', 'Hoppe', 'hoppe.mireya', 'a606d05710aac2fdbacbf86461174655c5dcdf41', 'xbeatty@example.net', 'active', '2007-07-07 18:04:29');
+INSERT INTO users VALUES (NULL, 'Zap', 'Rolfson', 'zrolfson', '48477817566966d2f2d111df65d4988d9fd905c9', 'gthiel@example.com', 'deactivated', '1987-09-28 14:58:26');
+INSERT INTO users VALUES (NULL, 'Timur', 'Murzik', 'tmurazik', '7cac1070c6b7af8ca3f8bcbf3f62d3bafe32be7d', 'vonrueden.khalil@example.org',  'active', '1978-03-05 23:25:04');
+INSERT INTO users VALUES (NULL, 'Jenifer', 'Weimann', 'weimann.jenifer', '483f264ceb6c81e2d1f615e895aa429cfb3ab7d3', 'drolfson@example.org', 'deactivated', '1987-07-08 15:22:45');
+INSERT INTO users VALUES (NULL, 'Sadye', 'Schneider', 'sadye.schneider', 'e9ff98c447c8fe6331c5ddf7ff8cfb4a991d31e2', 'eanderson@example.net',  'deactivated', '1977-01-28 18:24:35');
+INSERT INTO users VALUES (NULL, 'Natalie', 'Swift', 'nswift', '5503ff403ff6ca7cec306a6b9652be7d21d3104c', 'taurean.wisoky@example.org',  'deactivated', '2016-04-25 14:42:33');
+INSERT INTO users VALUES (NULL, 'Amira', 'Schumm', 'amira.schumm', '222c4c8ea342f86c4ce47c063226b0f72cffd7fa', 'bauch.raven@example.net', 'active', '1978-10-21 20:31:47');
+
 INSERT INTO country_cities(country,city) VALUES
 	('China', 'Shanghai'),
 	('China', 'Shenzhen'),
