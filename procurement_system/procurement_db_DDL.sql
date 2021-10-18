@@ -351,9 +351,9 @@ CREATE TABLE IF NOT EXISTS contracts(
     delivery_basis_id TINYINT UNSIGNED NOT NULL,
     payment_mode_id TINYINT UNSIGNED NOT NULL,
     payment_terms_id INT UNSIGNED NOT NULL,
-    destination_points_id BIGINT UNSIGNED NOT NULL,
+    -- destination_points_id BIGINT UNSIGNED NOT NULL,
     vat TINYINT UNSIGNED DEFAULT NULL,
-    transportation_routes_id INT UNSIGNED NOT NULL,
+    -- transportation_routes_id INT UNSIGNED NOT NULL,
 
 UNIQUE index_of_contract_no (contract_no),
 KEY index_of_collection_id(collection_id),
@@ -368,10 +368,10 @@ CONSTRAINT fk_contracts_currency_id FOREIGN KEY (currency_id) REFERENCES currenc
 CONSTRAINT fk_contracts_pol_id FOREIGN KEY (ports_of_loading_id) REFERENCES ports_of_loading(id),
 CONSTRAINT fk_contracts_delivery_basis_id FOREIGN KEY (delivery_basis_id) REFERENCES delivery_basis(id),
 CONSTRAINT fk_contract_payment_mode_id FOREIGN KEY (payment_mode_id) REFERENCES payment_modes(id),
-CONSTRAINT fk_contracts_payment_terms_id FOREIGN KEY (payment_terms_id) REFERENCES payment_terms(id),
-CONSTRAINT fk_contracts_dest_points_id FOREIGN KEY (destination_points_id) REFERENCES destination_points(id),
-CONSTRAINT fk_contracts_trans_routes_id FOREIGN KEY (transportation_routes_id) REFERENCES transportation_routes(id)
-);
+CONSTRAINT fk_contracts_payment_terms_id FOREIGN KEY (payment_terms_id) REFERENCES payment_terms(id)
+-- CONSTRAINT fk_contracts_dest_points_id FOREIGN KEY (destination_points_id) REFERENCES destination_points(id),
+-- CONSTRAINT fk_contracts_trans_routes_id FOREIGN KEY (transportation_routes_id) REFERENCES transportation_routes(id)
+); -- сделать триггеры на проверку статуса договора при создании заказа и наличие фабрик
 
 DROP TABLE IF EXISTS bank_details_status; -- платежные реквизиты
 CREATE TABLE IF NOT EXISTS bank_details_status(
@@ -389,9 +389,9 @@ CREATE TABLE IF NOT EXISTS bank_details(
     bank_name VARCHAR(255) NOT NULL,
     bank_address VARCHAR(255) NOT NULL,
     bank_country_city_id BIGINT UNSIGNED NOT NULL,
-    account_no TINYINT UNSIGNED NOT NULL,
-    corresp_account_no TINYINT UNSIGNED NOT NULL,
-    swift CHAR DEFAULT NULL,
+    account_no BIGINT UNSIGNED NOT NULL,
+    corresp_account_no BIGINT UNSIGNED NOT NULL,
+    swift CHAR(14) DEFAULT NULL,
     status_id TINYINT UNSIGNED NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON update CURRENT_TIMESTAMP,
@@ -404,37 +404,37 @@ CREATE TABLE IF NOT EXISTS bank_details(
     KEY index_of_contract_id_wh_status (contract_id,status_id)
 );
 
-DROP TABLE IF EXISTS media_types;
-CREATE TABLE IF NOT EXISTS media_types(
-    id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    type_name ENUM ('photo','video','file') NOT NULL
-);
-
-DROP TABLE IF EXISTS media;
-CREATE TABLE IF NOT EXISTS media(
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    media_type_id TINYINT UNSIGNED NOT NULL,
-    `filename` VARCHAR(255) NOT NULL UNIQUE,
-    size INT UNSIGNED DEFAULT NULL,
-    metadata JSON DEFAULT NULL,
-    contract_id BIGINT UNSIGNED DEFAULT NULL,
-    factory_id BIGINT UNSIGNED DEFAULT NULL,
-    suppl_leg_entity_id BIGINT UNSIGNED DEFAULT NULL,
-    alias_suppl_id BIGINT UNSIGNED NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    KEY index_of_media_type_id (media_type_id),
-    KEY index_of_contract_id (contract_id),
-    KEY index_of_factory_id (factory_id),
-    KEY index_of_suppl_leg_entity_id (suppl_leg_entity_id),
-    KEY index_of_alias_suppl_id (alias_suppl_id),
-
-    CONSTRAINT fk_media_media_type_id FOREIGN KEY (media_type_id) REFERENCES media_types(id),
-    CONSTRAINT fk_media_contract_id FOREIGN KEY (contract_id) REFERENCES contracts(id),
-    CONSTRAINT fk_media_factory_id FOREIGN KEY (factory_id) REFERENCES production_facilities(id),
-    CONSTRAINT fk_media_suppl_leg_entity_id FOREIGN KEY (suppl_leg_entity_id) REFERENCES suppliers_leg_entities(id),
-    CONSTRAINT fk_media_alias_suppl_id FOREIGN KEY (alias_suppl_id) REFERENCES alias_suppliers(id)
-);
+# DROP TABLE IF EXISTS media_types;
+# CREATE TABLE IF NOT EXISTS media_types(
+#     id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+#     type_name ENUM ('photo','video','file') NOT NULL
+# );
+#
+# DROP TABLE IF EXISTS media;
+# CREATE TABLE IF NOT EXISTS media(
+#     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+#     media_type_id TINYINT UNSIGNED NOT NULL,
+#     `filename` VARCHAR(255) NOT NULL UNIQUE,
+#     size INT UNSIGNED DEFAULT NULL,
+#     metadata JSON DEFAULT NULL,
+#     contract_id BIGINT UNSIGNED DEFAULT NULL,
+#     factory_id BIGINT UNSIGNED DEFAULT NULL,
+#     suppl_leg_entity_id BIGINT UNSIGNED DEFAULT NULL,
+#     alias_suppl_id BIGINT UNSIGNED NOT NULL,
+#     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+#
+#     KEY index_of_media_type_id (media_type_id),
+#     KEY index_of_contract_id (contract_id),
+#     KEY index_of_factory_id (factory_id),
+#     KEY index_of_suppl_leg_entity_id (suppl_leg_entity_id),
+#     KEY index_of_alias_suppl_id (alias_suppl_id),
+#
+#     CONSTRAINT fk_media_media_type_id FOREIGN KEY (media_type_id) REFERENCES media_types(id),
+#     CONSTRAINT fk_media_contract_id FOREIGN KEY (contract_id) REFERENCES contracts(id),
+#     CONSTRAINT fk_media_factory_id FOREIGN KEY (factory_id) REFERENCES production_facilities(id),
+#     CONSTRAINT fk_media_suppl_leg_entity_id FOREIGN KEY (suppl_leg_entity_id) REFERENCES suppliers_leg_entities(id),
+#     CONSTRAINT fk_media_alias_suppl_id FOREIGN KEY (alias_suppl_id) REFERENCES alias_suppliers(id)
+# );
 
 DROP TABLE IF EXISTS delivery_instores;
 CREATE TABLE IF NOT EXISTS delivery_instores(
@@ -451,7 +451,7 @@ CREATE TABLE IF NOT EXISTS delivery_instores(
 --  таблица с продукцией
 DROP TABLE IF EXISTS product_styles;
 CREATE TABLE IF NOT EXISTS product_styles(
-    style_no INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    style_no VARCHAR(255) NOT NULL PRIMARY KEY,
     collection_no_id BIGINT UNSIGNED NOT NULL,
     supplier_alias_id BIGINT UNSIGNED NOT NULL,
     price_value DECIMAL (7,2) UNSIGNED NOT NULL,
@@ -460,20 +460,19 @@ CREATE TABLE IF NOT EXISTS product_styles(
     production_type_id BIGINT UNSIGNED NOT NULL,
     product_description_id BIGINT UNSIGNED NOT NULL,
     product_composition_id BIGINT UNSIGNED NOT NULL,
-    media_id BIGINT UNSIGNED NOT NULL UNIQUE,
+    -- media_id BIGINT UNSIGNED NOT NULL UNIQUE,
     delivery_instore_id BIGINT UNSIGNED NOT NULL,
     production_facility_id BIGINT UNSIGNED NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    -- created_by
-    -- updated_by
+
     CONSTRAINT fk_product_styles_collection_no_id FOREIGN KEY (collection_no_id) REFERENCES collections(id),
     CONSTRAINT fk_product_styles_supplier_alias_id FOREIGN KEY (supplier_alias_id) REFERENCES alias_suppliers(id),
     CONSTRAINT fk_product_styles_price_currency_id FOREIGN KEY (price_currency_id) REFERENCES currencies(id),
     CONSTRAINT fk_product_styles_production_type_id FOREIGN KEY (production_type_id) REFERENCES production_types(id),
     CONSTRAINT fk_product_styles_product_descr_id FOREIGN KEY (product_description_id) REFERENCES product_descriptions(id),
     CONSTRAINT fk_product_styles_product_compo_id FOREIGN KEY (product_composition_id) REFERENCES product_compositions(id),
-    CONSTRAINT fk_product_styles_media_id FOREIGN KEY (media_id) REFERENCES media(id),
+    -- CONSTRAINT fk_product_styles_media_id FOREIGN KEY (media_id) REFERENCES media(id),
 
     CONSTRAINT fk_product_styles_delivery_instore_id
     FOREIGN KEY (delivery_instore_id) REFERENCES delivery_instores(id),
@@ -482,46 +481,35 @@ CREATE TABLE IF NOT EXISTS product_styles(
     FOREIGN KEY (production_facility_id) REFERENCES production_facilities(id)
 );
 
+-- сделать триггер на проверку типов по фабрике, валют по договору и тд., статуса контракта, статуса фабрики
+
 
 DROP TABLE IF EXISTS orders;
 CREATE TABLE IF NOT EXISTS orders(
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    collection_no_id BIGINT UNSIGNED NOT NULL, -- fk collections
-    supplier_alias_id BIGINT UNSIGNED NOT NULL, -- fk alias_suppliers
-    supplier_leg_entity_id BIGINT UNSIGNED NOT NULL,-- fk suppliers_leg_entities.id
-    buyer_alias BIGINT UNSIGNED NOT NULL,-- fk alias_buyers.id
-    buyer_leg_entity_id BIGINT UNSIGNED NOT NULL, -- fk buyers_leg_entities.id
     contract_no_id BIGINT UNSIGNED NOT NULL, -- fk contracts.id
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- created_by
-
-    KEY index_of_collection_suppl_alias_contract (collection_no_id, supplier_alias_id, contract_no_id),
-    KEY index_of_suppl_alias (supplier_alias_id),
-
-    CONSTRAINT fk_orders_collection_no_id FOREIGN KEY (collection_no_id) REFERENCES collections(id),
-    CONSTRAINT fk_orders_supplier_alias_id FOREIGN KEY (supplier_alias_id) REFERENCES alias_suppliers(id),
-    CONSTRAINT fk_orders_supplier_leg_entity_id FOREIGN KEY (supplier_leg_entity_id) REFERENCES suppliers_leg_entities(id),
-    CONSTRAINT fk_orders_buyer_alias FOREIGN KEY (buyer_alias) REFERENCES alias_buyers(id),
-    CONSTRAINT fk_orders_buyer_leg_entity_id FOREIGN KEY (buyer_leg_entity_id) REFERENCES buyers_leg_entities(id),
+    KEY index_of_collection_suppl_alias_contract (contract_no_id),
     CONSTRAINT fk_orders_contract_no_id FOREIGN KEY (contract_no_id) REFERENCES contracts(id)
-
 );
 --  добавить триггер на сумму заказа
+-- при калькуляции суммы заказа учитывать НДС из договора
 DROP TABLE IF EXISTS orders_products;
 CREATE TABLE IF NOT EXISTS orders_products(
     order_id BIGINT UNSIGNED NOT NULL,
-    style_no_id INT UNSIGNED NOT NULL,
+    style_no_id VARCHAR(255) NOT NULL,
+    qty_share_to_ship_by_route INT UNSIGNED NOT NULL DEFAULT 100,
+    transportation_route_id INT UNSIGNED NOT NULL,
     order_amount DECIMAL(12,2) UNSIGNED,  --  сумму заказа записываем сюда, т.к. зачастую сумма нужна закупочной, а не продуктовой команде
-    order_currency_id TINYINT UNSIGNED NOT NULL,
-    UNIQUE (order_id, style_no_id),
+
     KEY index_orders_products_order_amount (order_amount),
-    KEY index_orders_products_order_id_currency_id (order_id, order_currency_id), -- условия джойнов в эту таблицу будут в основном именно на эти два столбца
+    KEY index_orders_products_order_id_currency_id (order_id, style_no_id,order_amount), -- условия джойнов в эту таблицу будут в основном именно на эти два столбца
 
     CONSTRAINT fk_orders_products_order_id FOREIGN KEY (order_id) REFERENCES orders(id),
     CONSTRAINT fk_orders_products_style_no_id FOREIGN KEY (style_no_id) REFERENCES product_styles(style_no),
-    CONSTRAINT fk_orders_products_order_currency_id FOREIGN KEY(order_currency_id) REFERENCES product_styles(price_currency_id)
+    CONSTRAINT fk_orders_products_trans_route FOREIGN KEY  (transportation_route_id) REFERENCES transportation_routes(id)
 );
-
+-- сделать триггер на проверку долей (= 100)
 DROP TABLE IF EXISTS payments;
 CREATE TABLE IF NOT EXISTS payments(
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,

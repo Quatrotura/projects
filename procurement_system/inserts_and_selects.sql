@@ -72,7 +72,8 @@ ORDER BY 1;
 -- или так (по левому джойну в названиях юрлиц будет null там где юрлицо не заведено:
 SELECT alias.alias_suppl_name, legal.entity_name
 FROM alias_suppliers AS alias LEFT JOIN suppliers_leg_entities AS legal ON alias.id = legal.entity_alias_id
-ORDER BY 2;
+WHERE legal.entity_name is NULL;
+
 
 
 -- узнать на какого поставщика не заведены юр лица:
@@ -222,10 +223,11 @@ INSERT INTO production_facilities_types VALUES
 	(10, 3);
 
 -- узнаем кто что производит
-SELECT types.class, types.subclass, alias.alias_suppl_name ,factory.facility_name
+SELECT types.class, types.subclass, alias.alias_suppl_name ,sle.entity_name,factory.facility_name, factory.status
 FROM production_facilities_types factory_types JOIN production_facilities factory ON factory_types.production_facility_id = factory.id
 JOIN alias_suppliers alias ON factory.alias_suppl_id = alias.id
-JOIN production_types types ON factory_types.production_types_id = types.id;
+JOIN production_types types ON factory_types.production_types_id = types.id
+JOIN suppliers_leg_entities sle ON alias.id = sle.entity_alias_id;
 
 -- допустим нам надо узнать какой поставщик/фабрикd сможет производить пуховики:
 -- можно потом сделать процедуру из этого выражения
@@ -296,6 +298,8 @@ INSERT INTO payment_modes VALUES
 (NULL, 'T/T'),
 (NULL, 'L/C'),
 (NULL, 'mixed');
+
+SELECT * FROM payment_modes;
 
 INSERT INTO payment_due_points VALUES
 (NULL, 'planned latest shipment'),
@@ -389,13 +393,394 @@ WHERE (pol.name = 'Shanghai') AND (dp.name = 'FDC Moscow') AND (tm3.trans_mode !
   AND (tm2.trans_mode != 'air' OR tm2.trans_mode is NULL) AND (tm1.trans_mode != 'air' OR tm1.trans_mode is NULL)
 ORDER BY tr.transit_time LIMIT 1;
 
--- вывести результирующую таблицу с объединенными названиями маршрутов и транзитным временем
+-- вывести результирующую таблицу с объединенными названиями маршрутов, видом транспорта и транзитным временем
+-- иф можно сделать через функцию
+SELECT tr.id, CONCAT (pol.name, ' - ',
+    IF(th.name is NOT NULL, CONCAT(th.name,' '), ''),
+    IF(tm1.trans_mode is NOT NULL, CONCAT('by ',tm1.trans_mode, ' - '), ''), dp.name,
+    IF(tm2.trans_mode is NOT NULL, CONCAT(' by ',tm2.trans_mode), ''),
+    IF(tm3.trans_mode is NOT NULL, CONCAT(' by ',tm3.trans_mode), '') ) AS transit_route_name, tr.transit_time
+FROM transportation_routes tr
+LEFT JOIN ports_of_loading pol on tr.port_of_loading_id = pol.id
+LEFT JOIN transhipment_hubs th on tr.trans_hub_id = th.id
+LEFT JOIN transportation_modes tm1 on tr.from_port_to_hub_trans_mode_id = tm1.id
+LEFT JOIN transportation_modes tm2 on tr.from_hub_to_dest_point_trans_mode_id = tm2.id
+LEFT JOIN transportation_modes tm3 on tr.from_port_to_dest_point_trans_mode_id = tm3.id
+LEFT JOIN destination_points dp on tr.destination_point_id = dp.id
+ORDER BY tr.id;
+
+INSERT INTO contracts VALUES
+(NULL, 1, 1, 'IRR/STS/001/AW22', 8, 'active', 1, 1, 1, 1, 2, NULL),
+(NULL, 1, 4, 'IRR/STI/002/AW22', 8, 'active', 4, 1, 8, 1, 1, NULL),
+(NULL, 2, 7, 'IRL/ZTS/003/AW22', 8, 'active', 3, 7, 2, 1, 9, NULL),
+(NULL, 1, 10, 'IRR/HJO/005/AW22', 8, 'active', 1, 4, 1, 1, 3, NULL),
+(NULL, 1, 6, 'IRR/CMI/004/AW22', 8, 'active', 1, 6, 1, 1, 10, NULL),
+(NULL, 1, 5, 'IRR/SAM/006/AW22', 8, 'active', 4, 2, 1, 1, 4, NULL),
+(NULL, 1, 2, 'IRR/NSI/007/AW21', 6, 'deactivated', 1, 3, 2, 1, 9, NULL),
+(NULL, 1, 3, 'IRR/SHC/008/AW22', 8, 'active', 4, 1, 1, 1, 2, NULL),
+(NULL, 2, 8, 'IRL/HEM/010/AW22', 8, 'active', 1, 8, 8, 1, 7, 15),
+(NULL, 1, 9, 'IRR/ADG/012/SS22', 7, 'on hold', 1, 1, 1, 1, 1, NULL)
+
+SELECT pdp.due_points, payment_terms.* FROM payment_terms JOIN payment_due_points pdp on payment_terms.payment_due_point_id = pdp.id;
+
+Shanghai Textiles  leg entity id 1 and 4
+order id 1 and 7 and 2
+pt 20 - 50 - 30 / 60
+pt 10 - 60 - 30 / 90
+amount 70378.70 21277.08 67075.82
+
+SELECT * FROM contracts;
+
+-- достать валюты
+SELECT alias.alias_suppl_name, cur.name_acronym, cur.id as cur_id, con.contract_no
+FROM contracts con
+JOIN suppliers_leg_entities sle ON con.supplier_leg_entity_id = sle.id
+JOIN alias_suppliers alias ON alias.id = sle.entity_alias_id
+JOIN currencies cur ON con.currency_id = cur.id;
+
+-- допустим байер хочет закупить партию рубашек, и ему надо узнать кому можно разместить заказ
+-- по след критериям (поставщик производит футболки, подписан договор, договор активный,
+-- есть действующая фабрика,  варианты доставки в Москву не более 30 дней, отсрочка платежа не менее 30% и не менее 90 дней )
+
+select * from contracts;
+
+
+SELECT alias.alias_suppl_name, sle.entity_name, tr.transit_time, pt.class, pt.subclass, con.status, pf.status
+FROM contracts con
+JOIN suppliers_leg_entities sle on con.supplier_leg_entity_id = sle.id
+JOIN alias_suppliers alias on sle.entity_alias_id = alias.id
+JOIN production_facilities pf on alias.id = pf.alias_suppl_id
+JOIN production_facilities_types pft on pf.id = pft.production_facility_id
+JOIN production_types pt on pft.production_types_id = pt.id
+JOIN transportation_routes tr on con.ports_of_loading_id = tr.port_of_loading_id = pf.port_of_loading_id
+JOIN destination_points dp on tr.destination_point_id = dp.id
+WHERE pt.subclass = 'SHIRTS' AND con.status = 'active' AND pf.status = 'Approved'
+AND tr.transit_time <= 40 AND dp.name = 'FDC Moscow';
+
+INSERT INTO bank_details_status (name) VALUES
+    ('active'),
+    ('deactivated');
+
+SELECT * FROM bank_details_status;
+
+INSERT INTO bank_details VALUES
+(NULL, 1, 'Shanghai Textiles Supplies Co. Ltd.', 'Mainstreet 2, Road Town, British Virgin Islands', 7, 'Virgin Trust Bank BVI', 'Mainstreet 5, Road Town, British Virgin Islands',
+ 7, 38585904, 3040053, 'VTBBVI', 1, NOW(), NOW()),
+(NULL, 2, 'Shanghai Trading I&E Co. Ltd', 'Xuehuadadao 23, Shanghai, China', 1, 'Construction Bank of China', 'Liujielu 34, Shanghai, China',
+ 1, 90394984, 00309393, 'CBHSWF', 1, NOW(), NOW()),
+(NULL, 3, 'Zeria Tekstil Sanayi ve Dİs Ticaret Ltd Sti', 'Esenler Sk 1, Istanbul, Turkey ', 9, 'International Bank of Commerce',
+ 'Turkoglu 34, Istanbul, Turkey', 9, 24948943, 849398384, 'IBCTURK', 1, NOW(),NOW()),
+(NULL, 4, 'H&J Outerwear Apparels Co. Ltd', 'Xihulu 29, Xiamen, China ', 4, 'Bank of China Xiamen Branch', 'Shangxiadadao 34, Xiamen, China',
+ 4, 949403033,94940402, 'BOCXMN', 1, NOW(), NOW()),
+(NULL, 5, 'Chittagong Minar Industries Co. Ltd', 'Queens Street 10, Chittagong, Bangladesh', 8, 'Islamic Bank of Bangladesh', 'Fortune Road 23, Chittagong, Bangladesh', 8,
+ 57389393, 203948484, 'ISBCTG', 1, NOW(), NOW()),
+ (NULL, 6, 'Shuangfeng Accessories Manufacturing Co. Ltd', 'Xinguolu 65, Shenzhen, China', 2, 'Agricultural Bank of China',
+  'Zhuyaodadao 84, Shenzhen, China', 2, 7383943, 10984742, 'ABCSHZ', 2, now(), now()),
+(NULL, 7, 'Ningbo Supreme Import & Export Co. Ltd', 'Shijiedadao 84, Ningbo, China', 3, 'ICBC Ningbo branch', 'Louhongqiao 29, Ningbo, China',
+ 3, 8694943, 84949384, 'ICBCNGB', 1, NOW(), NOW()),
+(NULL, 8, 'Shanghai Knitwear Co. Ltd.', 'Dongfengdadao 13, Shanghai, China', 1, 'Construction Bank of China', 'Xidonglu 48, Shanghai, China',
+ 1, 95958432,50595984, 'CBCSHA', 2, NOW(), NOW()),
+(NULL, 9, 'Heung Apparels Manufacturing LLC', 'Minhaseung 34, Busan, Korea', 10, 'Korean Bank of Trade and Commerce',
+ 'Bunghaseyong 93, Busan, Korea', 10, 8478722, 84733823,'KBRCBSN', 1, NOW(), NOW()),
+(NULL, 10, 'Anhui Dafeng Garments I&E Co. Ltd', 'Liudalu 98, Shanghai, China', 1, 'Shanghai Trading Bank', 'Xinshijielu 23, Shanghai, China',
+ 1, 57348393, 94587362, 'STBSHA', 2, NOW(), NOW());
+
+SELECT * FROM bank_details;
+
+INSERT INTO delivery_instores VALUES
+(NULL, 8, 10, '2022-07-06'),
+(NULL, 8, 9, '2022-06-22'),
+(NULL, 8, 8, '2022-06-08'),
+(NULL, 8, 7, '2022-05-25'),
+(NULL, 8, 6, '2022-05-11'),
+(NULL, 8, 5, '2022-04-27'),
+(NULL, 8, 4, '2022-04-13'),
+(NULL, 8, 3, '2022-03-30'),
+(NULL, 8, 2, '2022-03-16'),
+(NULL, 8, 1, '2022-03-02');
+
+SELECT * from delivery_instores;
+
+-- как натянуть маршруты на заказы
+
+INSERT INTO product_styles VALUES
+('LT4R3400', 8, 1, 4.7800, 4, 3455, 6, 8, 2, 2, 1, NOW(), NOW()),
+('MK5R3499', 8, 1, 3.4800, 4, 14529, 8, 10, 7, 1, 2, NOW(), NOW()),
+('MK9F4278', 8, 5, 5.9300, 1, 45395, 2, 3, 3, 1, 5, NOW(), NOW()),
+('MP3L9402', 8, 6, 9.4500, 3, 24520, 5, 7, 4, 5, 6, NOW(), NOW()),
+('LD3O4901', 8, 9, 34.2300, 1, 18428, 9, 2, 8, 6, 7, NOW(), NOW()),
+('MO3J4828', 8, 1, 5.9400, 1, 3582, 6, 9, 6, 4, 1, NOW(), NOW()),
+('LE9I8308', 8, 4, 4.7300, 4, 5380, 8, 8, 6, 2, 8, NOW(), NOW()),
+('GP2K3800', 8, 1, 7.4200, 1, 9485, 6, 8, 2, 7, 1, NOW(), NOW()),
+('MJ9L9399', 8, 6, 12.9200, 3, 32560, 5, 7, 2, 6, 6, NOW(), NOW()),
+('LP2H6255', 8, 9, 23.4900, 1, 21840, 9, 1, 9, 10, 7, NOW(), NOW());
+
+
+SELECT style_no, SUM(price_value * ordered_qty) FROM product_styles GROUP BY 1;
+
+select alias.alias_suppl_name, count(ps.style_no)
+from product_styles ps join alias_suppliers alias on alias.id = ps.supplier_alias_id
+GROUP BY 1;
+
+# update product_styles set price_currency_id = 4 where style_no = 'GP2K3800';
+# update product_styles set price_currency_id = 4 where style_no = 'MO3J4828';
+# update product_styles set price_currency_id = 1 where style_no = 'LT4R3400';
+# update product_styles set price_currency_id = 1 where style_no = 'MK5R3499';
+
+-- группировка стоимости всех моделей по валюте платежа
+SELECT c.name_acronym, SUM(ps.price_value * ps.ordered_qty) AS amount
+FROM product_styles ps JOIN currencies c on ps.price_currency_id = c.id
+GROUP BY 1
+ORDER BY 2;
+
+SELECT alias.alias_suppl_name, c.id as contract_id
+FROM product_styles ps
+JOIN alias_suppliers alias on ps.supplier_alias_id = alias.id
+JOIN suppliers_leg_entities sle on alias.id = sle.entity_alias_id
+JOIN contracts c on sle.id = c.supplier_leg_entity_id
+GROUP BY 2;
++------------------------+-------------+
+| alias_suppl_name       | contract_id |
++------------------------+-------------+
+| Shanghai Textiles      |           1 |
+| Shanghai Textiles      |           2 |
+| Shuangfeng Accessories |           6 |
+| Minar Industry         |           5 |
+| Zeria Tekstil          |           3 |
+| H&J                    |           4 |
++------------------------+-------------+
+
+INSERT INTO orders VALUES
+(NULL, 1, now()),
+(NULL, 2, now()),
+(NULL, 3, now()),
+(NULL, 4, now()),
+(NULL, 5, now()),
+(NULL, 6, now()),
+(NULL, 1, now()),
+(NULL, 1, now()),
+(NULL, 5, now());
+SELECT ps.style_no, alias.alias_suppl_name, cc.city, ps.ordered_qty
+FROM product_styles ps
+JOIN alias_suppliers alias ON ps.supplier_alias_id = alias.id
+JOIN country_cities cc ON alias.alias_suppl_country_city_id = cc.id;
++----+----------------------------------------------------------------+--------------+
+| id | transit_route_name                                             | transit_time |
++----+----------------------------------------------------------------+--------------+
+|  1 | Shanghai - HUB Vostochny by sea - FDC Moscow by railway        |           35 |
+|  2 | Shanghai - HUB Vostochny by sea - RDC Yekaterinburg by railway |           30 |
+|  3 | Shanghai - HUB Ust Luga by sea - FDC Moscow by truck           |           57 |
+|  4 | Chittagong - HUB Vladivostok by sea - FDC Moscow by railway    |           45 |
+|  5 | Chittagong - HUB Ust Luga by sea - FDC Moscow by truck         |           52 |
+|  6 | Shanghai - FDC Moscow by air                                   |           12 |
+|  7 | Xiamen - FDC Moscow by air                                     |            7 |
+|  8 | Istambul - FDC Moscow by truck                                 |           14 |
+|  9 | Ningbo - RDC Novosibirsk by railway                            |           17 |
+| 10 | Ningbo - FDC Moscow by railway                                 |           21 |
++----+----------------------------------------------------------------+--------------+
+INSERT INTO orders_products (order_id, style_no_id, qty_share_to_ship_by_route, transportation_route_id) VALUES
+(5, 'MK9F4278', 70, 4),
+(5, 'MK9F4278', 30, 5),
+(3, 'MJ9L9399', 100, 8),
+(3, 'MP3L9402', 100, 8),
+(1, 'GP2K3800', 60, 1),
+(1, 'GP2K3800', 40, 2),
+(2, 'LT4R3400', 80, 1),
+(2, 'LT4R3400', 20, 3),
+(2, 'MK5R3499', 70, 1),
+(2, 'MK5R3499', 30, 6),
+(7, 'MO3J4828', 100, 3),
+(6, 'LE9I8308', 100, 7),
+(4, 'LD3O4901', 100, 7),
+(4, 'LP2H6255', 100, 7);
+
+Shanghai Textiles  leg entity id 1 and 4
+order id 1 and 7 and 2
+pt 20 - 50 - 30 / 60
+pt 10 - 60 - 30 / 90
+amount 70378.70 21277.08 67075.82 = 158731.6
+|        1 | GP2K3800    |                         60 |                       1 |     42227.22 |
+|        1 | GP2K3800    |                         40 |                       2 |     28151.48 |
+|        2 | LT4R3400    |                         80 |                       1 |     13211.92 |
+|        2 | LT4R3400    |                         20 |                       3 |      3302.98 |
+|        2 | MK5R3499    |                         70 |                       1 |     35392.64 |
+|        2 | MK5R3499    |                         30 |                       6 |     15168.28 |
+|        7 | MO3J4828    |                        100 |                       3 |     21277.08 |
++----------+-------------+----------------------------+-------------------------+--------------+
+| order_id | style_no_id | qty_share_to_ship_by_route | transportation_route_id | order_amount |
++----------+-------------+----------------------------+-------------------------+--------------+
+|        5 | MK9F4278    |                         70 |                       4 |    188434.65 |
+|        5 | MK9F4278    |                         30 |                       5 |     80757.71 |
+|        3 | MJ9L9399    |                        100 |                       8 |    420675.20 |
+|        3 | MP3L9402    |                        100 |                       8 |    231714.00 |
+|        1 | GP2K3800    |                         60 |                       1 |     42227.22 |
+|        1 | GP2K3800    |                         40 |                       2 |     28151.48 |
+|        2 | LT4R3400    |                         80 |                       1 |     13211.92 |
+|        2 | LT4R3400    |                         20 |                       3 |      3302.98 |
+|        2 | MK5R3499    |                         70 |                       1 |     35392.64 |
+|        2 | MK5R3499    |                         30 |                       6 |     15168.28 |
+|        7 | MO3J4828    |                        100 |                       3 |     21277.08 |
+|        6 | LE9I8308    |                        100 |                       7 |     25447.40 |
+|        4 | LD3O4901    |                        100 |                       7 |    630790.44 |
+|        4 | LP2H6255    |                        100 |                       7 |    513021.60 |
++----------+-------------+----------------------------+-------------------------+--------------+
+
+DELIMITER //
+DROP TRIGGER IF EXISTS calc_amount //
+CREATE TRIGGER calc_amount BEFORE INSERT ON orders_products
+FOR EACH ROW
+BEGIN
+    SET NEW.order_amount =
+        (SELECT ps.price_value FROM product_styles AS ps WHERE ps.style_no = NEW.style_no_id LIMIT 1) *
+        (SELECT ps.ordered_qty FROM product_styles AS ps WHERE ps.style_no = NEW.style_no_id LIMIT 1) *
+        (NEW.qty_share_to_ship_by_route / 100);
+END //
+
+INSERT INTO payments VALUES
+(NULL, 'advance payment', 1, 0, 0, 'approved', now()),
+(NULL, 'before shipment', 1, 0, 0, 'created', now()),
+(NULL, 'advance payment', 7, 0, 0, 'created', now()),
+(NULL, 'advance payment', 2, 0, 0, 'created', now()),
+(NULL, 'advance payment', 3, 0, 0, 'approved', now()),
+(NULL, 'before shipment', 3, 0, 0, 'approved', now()),
+(NULL, 'postpayment_1', 3, 0, 0, 'created', now()),
+(NULL, 'before shipment', 4, 0, 0, 'created', now()),
+(NULL, 'postpayment_1', 5, 0, 0, 'approved', now()),
+(NULL, 'postpayment_2', 5, 0, 0, 'created', now());
+
+DELIMITER //
+DROP TRIGGER IF EXISTS calc_check_payment //
+CREATE TRIGGER calc_check_payment BEFORE INSERT ON payments
+FOR EACH ROW
+BEGIN
+    DECLARE p_type VARCHAR(255);
+    DECLARE amount_share_for_payment INT;
+    DECLARE order_calc_amount DECIMAL(12,2);
+    SET p_type = NEW.payment_type;
+    SET order_calc_amount = (SELECT sum(order_amount)
+                            FROM orders_products op WHERE op.order_id = NEW.order_id);
+
+    CASE p_type
+        WHEN 'advance payment' THEN
+        SET amount_share_for_payment = (SELECT pt.advance_payment_val
+                                FROM orders
+                                JOIN contracts contr on orders.contract_no_id = contr.id
+                                JOIN payment_terms pt on contr.payment_terms_id = pt.id
+                                WHERE NEW.order_id = orders.id);
+        WHEN 'before shipment' THEN
+        SET amount_share_for_payment = (SELECT pt.before_shpmt_payment_val
+                                FROM orders
+                                JOIN contracts contr on orders.contract_no_id = contr.id
+                                JOIN payment_terms pt on contr.payment_terms_id = pt.id
+                                WHERE NEW.order_id = orders.id);
+        WHEN 'postpayment_1' THEN
+        SET amount_share_for_payment = (SELECT pt.postpayment_1_val
+                                FROM orders
+                                JOIN contracts contr on orders.contract_no_id = contr.id
+                                JOIN payment_terms pt on contr.payment_terms_id = pt.id
+                                WHERE NEW.order_id = orders.id);
+        WHEN 'postpayment_2' THEN
+        SET amount_share_for_payment = (SELECT pt.postpayment_2_val
+                                FROM orders
+                                JOIN contracts contr on orders.contract_no_id = contr.id
+                                JOIN payment_terms pt on contr.payment_terms_id = pt.id
+                                WHERE NEW.order_id = orders.id);
+    END CASE;
+    SET NEW.payment_amount_suggested = order_calc_amount * (amount_share_for_payment/100);
+
+END //
+
+SELECT alias_suppl_name, sle.id, orders.id  as order_id, contr.contract_no, SUM(op.order_amount),
+       pt.advance_payment_val,
+       pt.before_shpmt_payment_val,
+       pt.postpayment_1_val, pt.postpayment_2_val,
+       pt.postpayment_1_due_point_delta, pt.postpayment_2_due_point_delta
+FROM orders
+JOIN contracts contr on orders.contract_no_id = contr.id
+JOIN suppliers_leg_entities sle on contr.supplier_leg_entity_id = sle.id
+JOIN alias_suppliers alias on sle.entity_alias_id = alias.id
+JOIN orders_products op on orders.id = op.order_id
+JOIN payment_terms pt on contr.payment_terms_id = pt.id
+GROUP BY 1,2,3;
+
+SELECT alias.alias_suppl_name, sle.id
+FROM suppliers_leg_entities sle
+JOIN alias_suppliers alias on sle.entity_alias_id = alias.id;
+
+Shanghai Textiles contract id 1 and 4; leg entity id 1 and 4
+order id 1 and 7 and 2
+pt 20 - 50 - 30 / 60
+pt 10 - 60 - 30 / 90
+amount 70378.70 21277.08 67075.82
 
 
 
 
 
+SELECT alias.alias_suppl_name, ord.id as order_id, contr.id as contr_id
+FROM orders ord
+JOIN contracts contr on ord.contract_no_id = contr.id
+JOIN suppliers_leg_entities sle on contr.supplier_leg_entity_id = sle.id
+JOIN alias_suppliers alias on sle.entity_alias_id = alias.id
++------------------------+--------------+--------+------------------+
+| alias_suppl_name       | name_acronym | cur_id | contract_no      |
++------------------------+--------------+--------+------------------+
+| Shanghai Textiles      | USD          |      1 | IRR/STS/001/AW22 |
+| Shanghai Textiles      | CNY          |      4 | IRR/STI/002/AW22 |
+| Zeria Tekstil          | EUR          |      3 | IRL/ZTS/003/AW22 |
+| H&J                    | USD          |      1 | IRR/HJO/005/AW22 |
+| Minar Industry         | USD          |      1 | IRR/CMI/004/AW22 |
+| Shuangfeng Accessories | CNY          |      4 | IRR/SAM/006/AW22 |
+| Ningbo Supreme         | USD          |      1 | IRR/NSI/007/AW21 |
+| Shanghai Knitwear      | CNY          |      4 | IRR/SHC/008/AW22 |
+| Heung Apparels         | USD          |      1 | IRL/HEM/010/AW22 |
+| Anhui Garments         | USD          |      1 | IRR/ADG/012/SS22 |
++------------------------+--------------+--------+------------------+
 
+
+-- для проверки заполнения:
+SELECT alias.id as alias_id, alias.alias_suppl_name as alias_name, pt.id as pt_type, pt.class, pt.subclass, pd.id as descr, pd.description,
+       pf.id as factory_id, pf.facility_name as factory_name,sle.entity_name, sle.entity_reg_address, cc.country, cc.city
+FROM contracts con
+JOIN suppliers_leg_entities sle on con.supplier_leg_entity_id = sle.id
+JOIN alias_suppliers alias on sle.entity_alias_id = alias.id
+JOIN country_cities cc on alias.alias_suppl_country_city_id = cc.id
+JOIN production_facilities pf on alias.id = pf.alias_suppl_id
+JOIN production_facilities_types pft on pf.id = pft.production_facility_id
+JOIN production_types pt on pft.production_types_id = pt.id
+JOIN product_descriptions pd on pt.id = pd.production_type_id
+ORDER BY 1;
+
+
++-------------+------------------------+----------------------------------------------+-------------------------------------------------+------------+------------+
+| CONTRACT_ID | alias_suppl_name       | entity_name                                  | entity_reg_address                              | country    | city       |
++-------------+------------------------+----------------------------------------------+-------------------------------------------------+------------+------------+
+|           1 | Shanghai Textiles      | Shanghai Textiles Supplies Co. Ltd.          | Mainstreet 2, Road Town, British Virgin Islands | China      | Shanghai   |
+|           2 | Shanghai Textiles      | Shanghai Trading I&E Co. Ltd                 | Xuehuadadao 23, Shanghai, China                 | China      | Shanghai   |
+|           3 | Zeria Tekstil          | Zeria Tekstil Sanayi ve Dİs Ticaret Ltd Sti  | Esenler Sk 1, Istanbul, Turkey                  | Turkey     | Istambul   |
+|           4 | H&J                    | H&J Outerwear Apparels Co. Ltd               | Xihulu 29, Xiamen, China                        | China      | Xiamen     |
+|           5 | Minar Industry         | Chittagong Minar Industries Co. Ltd          | Queens Street 10, Chittagong, Bangladesh        | Bangladesh | Chittagong |
+|           6 | Shuangfeng Accessories | Shuangfeng Accessories Manufacturing Co. Ltd | Xinguolu 65, Shenzhen, China                    | China      | Shenzhen   |
+|           7 | Ningbo Supreme         | Ningbo Supreme Import & Export Co. Ltd       | Shijiedadao 84, Ningbo, China                   | China      | Ningbo     |
+|           8 | Shanghai Knitwear      | Shanghai Knitwear Co. Ltd.                   | Dongfengdadao 13, Shanghai, China               | China      | Shanghai   |
+|           9 | Heung Apparels         | Heung Apparels Manufacturing LLC             | Minhaseung 34, Busan, Korea                     | Korea      | Busan      |
+|          10 | Anhui Garments         | Anhui Dafeng Garments I&E Co. Ltd            | Liudalu 98, Shanghai, China                     | China      | Shanghai   |
++-------------+------------------------+----------------------------------------------+-------------------------------------------------+------------+------------+
++------------------------+------+----------------------------------------------+
+| alias_suppl_name       | id   | entity_name                                  |
++------------------------+------+----------------------------------------------+
+| Top Shirts             | NULL | NULL                                         |
+| Shanghai Textiles      |    1 | Shanghai Textiles Supplies Co. Ltd.          |
+| Ningbo Supreme         |    2 | Ningbo Supreme Import & Export Co. Ltd       |
+| Shanghai Knitwear      |    3 | Shanghai Knitwear Co. Ltd.                   |
+| Shanghai Textiles      |    4 | Shanghai Trading I&E Co. Ltd                 |
+| Shuangfeng Accessories |    5 | Shuangfeng Accessories Manufacturing Co. Ltd |
+| Minar Industry         |    6 | Chittagong Minar Industries Co. Ltd          |
+| Zeria Tekstil          |    7 | Zeria Tekstil Sanayi ve Dİs Ticaret Ltd Sti  |
+| Heung Apparels         |    8 | Heung Apparels Manufacturing LLC             |
+| Anhui Garments         |    9 | Anhui Dafeng Garments I&E Co. Ltd            |
+| H&J                    |   10 | H&J Outerwear Apparels Co. Ltd               |
++------------------------+------+----------------------------------------------+
 
 --
 +-------+------------+----+------------+------------+
@@ -451,3 +836,8 @@ ORDER BY tr.transit_time LIMIT 1;
 |  7 | SS22 |
 |  9 | SS23 |
 +----+------+
+
+cny styles alias.id = 1:
+('LT4R3400', 8, 1, 4.7800, 4, 3455, 6, 8, 2, 2, 1, NOW(), NOW()),
+('MK5R3499', 8, 1, 3.4800, 4, 14529, 8, 10, 7, 1, 2, NOW(), NOW()),
+contract id = 2, currency CNY - IRR/STI/002/AW22
