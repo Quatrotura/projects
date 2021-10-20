@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>3129e588-4fd3-4876-a8d6-d1802113ac0e.SCHEMA:procurement_db</OriginalElement>
+  <nodes>
+    <node x="393.37499999999955" y="1111.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transportation_routes</node>
+    <node x="1876.9999999999998" y="370.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.suppliers_leg_entities</node>
+    <node x="1109.5553784013598" y="1188.5">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_facilities_types</node>
+    <node x="2524.25" y="1448.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.payments</node>
+    <node x="4161.25" y="1056.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.bank_details</node>
+    <node x="608.0984268707482" y="414.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.ports_of_loading</node>
+    <node x="3676.75" y="326.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.payment_terms</node>
+    <node x="3274.75" y="796.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_compositions</node>
+    <node x="1710.9999999999998" y="425.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.collections</node>
+    <node x="1739.9999999999998" y="774.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.delivery_instores</node>
+    <node x="2700.25" y="686.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts</node>
+    <node x="3269.25" y="183.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.payment_due_points</node>
+    <node x="426.3749999999998" y="796.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transportation_modes</node>
+    <node x="3262.056760204082" y="425.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.delivery_basis</node>
+    <node x="0.0" y="172.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.destination_points</node>
+    <node x="2735.75" y="1177.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.orders</node>
+    <node x="256.9999999999998" y="172.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transhipment_hubs</node>
+    <node x="2327.181760204082" y="0.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.country_cities</node>
+    <node x="4063.834715136055" y="796.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.bank_details_status</node>
+    <node x="813.3749999999998" y="719.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_facilities</node>
+    <node x="1410.9136904761895" y="414.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_types</node>
+    <node x="1381.3749999999998" y="785.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_descriptions</node>
+    <node x="0.0" y="1681.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.users</node>
+    <node x="1542.9999999999998" y="1470.5">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.orders_products</node>
+    <node x="2927.25" y="172.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.alias_buyers</node>
+    <node x="1308.6636904761895" y="172.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.alias_suppliers</node>
+    <node x="4126.80537840136" y="425.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.currencies</node>
+    <node x="4333.834715136055" y="763.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.currency_exchange_rates</node>
+    <node x="1546.9999999999998" y="1067.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_styles</node>
+    <node x="2604.0" y="425.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.payment_modes</node>
+    <node x="2844.0" y="370.0">3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.buyers_leg_entities</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_styles" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_types" relationship="REFERENCES">
+      <point x="-55.5" y="-160.0" />
+      <point x="1639.4999999999998" y="1025.0" />
+      <point x="1655.8749999999998" y="1025.0" />
+      <point x="1655.8749999999998" y="664.0" />
+      <point x="1584.6249999999998" y="664.0" />
+      <point x="1584.6249999999998" y="634.0" />
+      <point x="1548.1636904761895" y="634.0" />
+      <point x="45.75" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.suppliers_leg_entities" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.country_cities" relationship="REFERENCES">
+      <point x="176.75" y="-94.0" />
+      <point x="2407.25" y="299.0" />
+      <point x="2160.181760204082" y="299.0" />
+      <point x="2160.181760204082" y="151.0" />
+      <point x="2401.119260204082" y="151.0" />
+      <point x="-10.5625" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.buyers_leg_entities" relationship="REFERENCES">
+      <point x="19.75" y="-149.0" />
+      <point x="2878.0" y="624.0" />
+      <point x="3002.5" y="624.0" />
+      <point x="0.0" y="94.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.currency_exchange_rates" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.currencies" relationship="REFERENCES">
+      <point x="63.75" y="-72.0" />
+      <point x="4525.084715136055" y="654.0" />
+      <point x="4287.80537840136" y="654.0" />
+      <point x="69.0" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_facilities_types" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_types" relationship="REFERENCES">
+      <point x="70.0" y="-38.5" />
+      <point x="1319.5553784013598" y="1025.0" />
+      <point x="1370.8749999999998" y="1025.0" />
+      <point x="1370.8749999999998" y="664.0" />
+      <point x="1456.6636904761895" y="664.0" />
+      <point x="-45.75" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transportation_routes" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.collections" relationship="REFERENCES">
+      <point x="177.0" y="-116.0" />
+      <point x="776.8749999999995" y="1035.0" />
+      <point x="1729.4999999999998" y="1035.0" />
+      <point x="1729.4999999999998" y="664.0" />
+      <point x="1789.4999999999998" y="664.0" />
+      <point x="1789.4999999999998" y="634.0" />
+      <point x="1820.4999999999998" y="634.0" />
+      <point x="36.5" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.ports_of_loading" relationship="REFERENCES">
+      <point x="-138.25" y="-149.0" />
+      <point x="2720.0" y="644.0" />
+      <point x="785.8484268707482" y="644.0" />
+      <point x="59.25" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.alias_buyers" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.country_cities" relationship="REFERENCES">
+      <point x="0.0" y="-50.0" />
+      <point x="3088.25" y="141.0" />
+      <point x="2443.369260204082" y="141.0" />
+      <point x="31.6875" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.bank_details" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts" relationship="REFERENCES">
+      <point x="-110.25" y="-171.0" />
+      <point x="4198.0" y="1015.0" />
+      <point x="2937.25" y="1015.0" />
+      <point x="79.0" y="149.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_styles" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.delivery_instores" relationship="REFERENCES">
+      <point x="55.5" y="-160.0" />
+      <point x="1750.4999999999998" y="1015.0" />
+      <point x="1849.4999999999998" y="1015.0" />
+      <point x="0.0" y="61.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_styles" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.collections" relationship="REFERENCES">
+      <point x="18.5" y="-160.0" />
+      <point x="1713.4999999999998" y="1025.0" />
+      <point x="1718.4999999999998" y="1025.0" />
+      <point x="1718.4999999999998" y="654.0" />
+      <point x="1747.4999999999998" y="654.0" />
+      <point x="-36.5" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.orders" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts" relationship="REFERENCES">
+      <point x="0.0" y="-50.0" />
+      <point x="2853.25" y="1015.0" />
+      <point x="2779.25" y="1015.0" />
+      <point x="-79.0" y="149.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.orders_products" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.orders" relationship="REFERENCES">
+      <point x="101.33333333333326" y="-71.5" />
+      <point x="1796.333333333333" y="1423.0" />
+      <point x="2853.25" y="1423.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.orders_products" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_styles" relationship="REFERENCES">
+      <point x="0.0" y="-71.5" />
+      <point x="0.0" y="160.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.payment_modes" relationship="REFERENCES">
+      <point x="-19.75" y="-149.0" />
+      <point x="2838.5" y="624.0" />
+      <point x="2714.0" y="624.0" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_styles" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_descriptions" relationship="REFERENCES">
+      <point x="-92.5" y="-160.0" />
+      <point x="1602.4999999999998" y="1005.0" />
+      <point x="1513.3749999999998" y="1005.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_facilities" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.alias_suppliers" relationship="REFERENCES">
+      <point x="182.33333333333326" y="-116.0" />
+      <point x="1269.208333333333" y="664.0" />
+      <point x="1155.580357142856" y="664.0" />
+      <point x="1155.580357142856" y="299.0" />
+      <point x="1414.8303571428562" y="299.0" />
+      <point x="-212.33333333333326" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.alias_suppliers" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.country_cities" relationship="REFERENCES">
+      <point x="0.0" y="-50.0" />
+      <point x="1627.1636904761895" y="141.0" />
+      <point x="2379.994260204082" y="141.0" />
+      <point x="-31.6875" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.currencies" relationship="REFERENCES">
+      <point x="138.25" y="-149.0" />
+      <point x="2996.5" y="654.0" />
+      <point x="4149.80537840136" y="654.0" />
+      <point x="-69.0" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.suppliers_leg_entities" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.alias_suppliers" relationship="REFERENCES">
+      <point x="-176.75" y="-94.0" />
+      <point x="2053.75" y="299.0" />
+      <point x="1839.497023809523" y="299.0" />
+      <point x="212.33333333333348" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.suppliers_leg_entities" relationship="REFERENCES">
+      <point x="-59.25" y="-149.0" />
+      <point x="2799.0" y="634.0" />
+      <point x="2230.5" y="634.0" />
+      <point x="0.0" y="94.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.buyers_leg_entities" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.country_cities" relationship="REFERENCES">
+      <point x="-79.25" y="-94.0" />
+      <point x="2923.25" y="299.0" />
+      <point x="2916.75" y="299.0" />
+      <point x="2916.75" y="151.0" />
+      <point x="2422.244260204082" y="151.0" />
+      <point x="10.5625" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.payment_terms" relationship="REFERENCES">
+      <point x="98.75" y="-149.0" />
+      <point x="2957.0" y="644.0" />
+      <point x="3840.75" y="644.0" />
+      <point x="0.0" y="138.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_styles" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_facilities" relationship="REFERENCES">
+      <point x="-129.5" y="-160.0" />
+      <point x="1565.4999999999998" y="1015.0" />
+      <point x="1086.8749999999998" y="1015.0" />
+      <point x="0.0" y="116.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.payment_terms" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.payment_due_points" relationship="REFERENCES">
+      <point x="0.0" y="-138.0" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transhipment_hubs" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.country_cities" relationship="REFERENCES">
+      <point x="0.0" y="-50.0" />
+      <point x="375.4999999999998" y="151.0" />
+      <point x="303.41369047618946" y="151.0" />
+      <point x="303.41369047618946" y="121.0" />
+      <point x="2337.744260204082" y="121.0" />
+      <point x="-73.9375" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_styles" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.currencies" relationship="REFERENCES">
+      <point x="129.5" y="-160.0" />
+      <point x="1824.4999999999998" y="1035.0" />
+      <point x="3994.376381802722" y="1035.0" />
+      <point x="3994.376381802722" y="664.0" />
+      <point x="4195.80537840136" y="664.0" />
+      <point x="-23.0" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.buyers_leg_entities" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.alias_buyers" relationship="REFERENCES">
+      <point x="79.25" y="-94.0" />
+      <point x="3081.75" y="299.0" />
+      <point x="3088.25" y="299.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.payments" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.orders" relationship="REFERENCES">
+      <point x="0.0" y="-94.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.destination_points" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.country_cities" relationship="REFERENCES">
+      <point x="0.0" y="-50.0" />
+      <point x="118.5" y="151.0" />
+      <point x="303.41369047618946" y="151.0" />
+      <point x="303.41369047618946" y="121.0" />
+      <point x="2337.744260204082" y="121.0" />
+      <point x="-73.9375" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_facilities" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.ports_of_loading" relationship="REFERENCES">
+      <point x="-182.33333333333337" y="-116.0" />
+      <point x="904.5416666666665" y="664.0" />
+      <point x="721.5984268707482" y="664.0" />
+      <point x="721.5984268707482" y="654.0" />
+      <point x="667.3484268707482" y="654.0" />
+      <point x="-59.25" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_facilities_types" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_facilities" relationship="REFERENCES">
+      <point x="-70.0" y="-38.5" />
+      <point x="1179.5553784013598" y="1015.0" />
+      <point x="1086.8749999999998" y="1015.0" />
+      <point x="0.0" y="116.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.bank_details" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.country_cities" relationship="REFERENCES">
+      <point x="36.75" y="-171.0" />
+      <point x="4345.0" y="1025.0" />
+      <point x="4599.334715136055" y="1025.0" />
+      <point x="4599.334715136055" y="131.0" />
+      <point x="2464.494260204082" y="131.0" />
+      <point x="52.8125" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_styles" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_compositions" relationship="REFERENCES">
+      <point x="92.5" y="-160.0" />
+      <point x="1787.4999999999998" y="1025.0" />
+      <point x="3385.75" y="1025.0" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.delivery_basis" relationship="REFERENCES">
+      <point x="59.25" y="-149.0" />
+      <point x="2917.5" y="634.0" />
+      <point x="3340.056760204082" y="634.0" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.ports_of_loading" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.country_cities" relationship="REFERENCES">
+      <point x="0.0" y="-50.0" />
+      <point x="726.5984268707482" y="151.0" />
+      <point x="303.41369047618946" y="151.0" />
+      <point x="303.41369047618946" y="121.0" />
+      <point x="2337.744260204082" y="121.0" />
+      <point x="-73.9375" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_styles" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.alias_suppliers" relationship="REFERENCES">
+      <point x="-18.5" y="-160.0" />
+      <point x="1676.4999999999998" y="1025.0" />
+      <point x="1689.4999999999998" y="1025.0" />
+      <point x="1689.4999999999998" y="299.0" />
+      <point x="1627.1636904761895" y="299.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.bank_details" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.bank_details_status" relationship="REFERENCES">
+      <point x="-36.75" y="-171.0" />
+      <point x="4271.5" y="1005.0" />
+      <point x="4188.834715136055" y="1005.0" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.product_descriptions" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_types" relationship="REFERENCES">
+      <point x="0.0" y="-50.0" />
+      <point x="1513.3749999999998" y="664.0" />
+      <point x="1584.6249999999998" y="664.0" />
+      <point x="1584.6249999999998" y="634.0" />
+      <point x="1548.1636904761895" y="634.0" />
+      <point x="45.75" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.contracts" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.collections" relationship="REFERENCES">
+      <point x="-98.75" y="-149.0" />
+      <point x="2759.5" y="664.0" />
+      <point x="1789.4999999999998" y="664.0" />
+      <point x="1789.4999999999998" y="634.0" />
+      <point x="1820.4999999999998" y="634.0" />
+      <point x="36.5" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.delivery_instores" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.collections" relationship="REFERENCES">
+      <point x="0.0" y="-61.0" />
+      <point x="1849.4999999999998" y="664.0" />
+      <point x="1789.4999999999998" y="664.0" />
+      <point x="1789.4999999999998" y="634.0" />
+      <point x="1820.4999999999998" y="634.0" />
+      <point x="36.5" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transportation_routes" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transhipment_hubs" relationship="REFERENCES">
+      <point x="-118.0" y="-116.0" />
+      <point x="481.87499999999955" y="1025.0" />
+      <point x="375.4999999999998" y="1025.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.orders_products" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transportation_routes" relationship="REFERENCES">
+      <point x="-101.33333333333326" y="-71.5" />
+      <point x="1593.6666666666665" y="1423.0" />
+      <point x="599.8749999999995" y="1423.0" />
+      <point x="0.0" y="116.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transportation_routes" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.ports_of_loading" relationship="REFERENCES">
+      <point x="-59.0" y="-116.0" />
+      <point x="540.8749999999995" y="1015.0" />
+      <point x="415.8749999999998" y="1015.0" />
+      <point x="415.8749999999998" y="664.0" />
+      <point x="721.5984268707482" y="664.0" />
+      <point x="721.5984268707482" y="654.0" />
+      <point x="667.3484268707482" y="654.0" />
+      <point x="-59.25" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transportation_routes" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.destination_points" relationship="REFERENCES">
+      <point x="-177.0" y="-116.0" />
+      <point x="422.87499999999955" y="1035.0" />
+      <point x="118.5" y="1035.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transportation_routes" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.transportation_modes" relationship="REFERENCES">
+      <point x="118.0" y="-116.0" />
+      <point x="717.8749999999995" y="1035.0" />
+      <point x="732.208333333333" y="1035.0" />
+      <point x="122.33333333333326" y="39.0" />
+    </edge>
+    <edge source="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.production_facilities" target="3129e588-4fd3-4876-a8d6-d1802113ac0e.TABLE:procurement_db.country_cities" relationship="REFERENCES">
+      <point x="0.0" y="-116.0" />
+      <point x="1086.8749999999998" y="664.0" />
+      <point x="1026.638711734693" y="664.0" />
+      <point x="1026.638711734693" y="131.0" />
+      <point x="2358.869260204082" y="131.0" />
+      <point x="-52.8125" y="50.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.5664651263226085" showDependencies="false" x="2305.5" y="945.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+
