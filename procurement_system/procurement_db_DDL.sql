@@ -160,7 +160,6 @@ CREATE TABLE IF NOT EXISTS production_facilities (
     -- добавить триггер на сверку порта в фабрике с портом в контракте (IN)
     -- потом добавить rejected_info в виде json словаря, который аккумулирует данные по отброковкам:
     -- тип производства-кол-во отбраковок в штуках (инфа подтягивается триггером)
-    -- сделать процедуру на определение реинспекции фабрики по сроку последней инспекции
     CONSTRAINT fk_prod_facil_fact_country_city_id
     FOREIGN KEY (fact_country_city_id) REFERENCES country_cities (id),
 
@@ -473,10 +472,9 @@ CREATE TABLE IF NOT EXISTS orders(
     KEY index_of_collection_suppl_alias_contract (contract_no_id),
     CONSTRAINT fk_orders_contract_no_id FOREIGN KEY (contract_no_id) REFERENCES contracts(id)
 );
---  добавить триггер на сумму заказа
--- при калькуляции суммы заказа учитывать НДС из договора
 DROP TABLE IF EXISTS orders_products;
 CREATE TABLE IF NOT EXISTS orders_products(
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     order_id BIGINT UNSIGNED NOT NULL,
     style_no_id VARCHAR(255) NOT NULL,
     qty_share_to_ship_by_route INT UNSIGNED NOT NULL DEFAULT 100,
@@ -490,19 +488,18 @@ CREATE TABLE IF NOT EXISTS orders_products(
     CONSTRAINT fk_orders_products_style_no_id FOREIGN KEY (style_no_id) REFERENCES product_styles(style_no),
     CONSTRAINT fk_orders_products_trans_route FOREIGN KEY  (transportation_route_id) REFERENCES transportation_routes(id)
 );
--- сделать триггер на проверку долей (= 100)
 DROP TABLE IF EXISTS payments;
 CREATE TABLE IF NOT EXISTS payments(
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     payment_type ENUM ('advance payment', 'before shipment', 'postpayment_1', 'postpayment_2', 'lc'),
-    order_id BIGINT UNSIGNED NOT NULL, -- fk
+    orders_products_id BIGINT UNSIGNED NOT NULL, -- fk
     payment_amount_suggested DECIMAL(12,2) UNSIGNED,
     payment_amount_user DECIMAL(12,2) UNSIGNED,
     status ENUM ('created', 'approved', 'remitted', 'cancelled'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    KEY index_of_payments (order_id, status, payment_amount_user),
-    CONSTRAINT fk_payments_order_id FOREIGN KEY (order_id) REFERENCES orders(id)
+    KEY index_of_payments (orders_products_id, status, payment_amount_user),
+    CONSTRAINT fk_payments_order_id FOREIGN KEY (orders_products_id) REFERENCES orders_products(id)
     -- trigger to check status amendment
     -- trigger to restrict deletion and update
     -- trigger to check payment amount vs balance
